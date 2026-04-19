@@ -1,17 +1,14 @@
-import numpy as np
-import numpy as np
 from utils import (
     get_vertices,
     get_rectanglescene,
     get_homogeneous_vertices,
     get_rotation_matrix,
     get_translation,
-    get_scale,
     print_current_transformation,
 )
 
 
-FILE_NAME = "assets/t01.md"
+FILE_NAME = "assets/t03.md"
 
 
 def frame1(scene):
@@ -21,11 +18,14 @@ def frame1(scene):
     rect.set_geometry(rect_vertices.flatten())
     print_current_transformation(vertices=rect_vertices, frame_number=1, step_number=1, file_name=FILE_NAME)
 
+
 def frame2(scene):
     vertices_h = get_homogeneous_vertices() # vertices_h stands for homogeneous vertices
-    R = get_rotation_matrix(30)
+
+    R = get_rotation_matrix(90)
     vertices_h = (R @ vertices_h.T).T
     print_current_transformation(R=R, vertices=vertices_h, step_number=1, frame_number=2, file_name=FILE_NAME)
+
     T = get_translation(2, 3)
     vertices_h = (T @ vertices_h.T).T
     print_current_transformation(R=R, T=T, vertices=vertices_h, step_number=2, frame_number=2, file_name=FILE_NAME)
@@ -35,10 +35,7 @@ def frame2(scene):
     rect["color"] = "red"
 
 
-
-
 if __name__ == '__main__':
-
     scene = get_rectanglescene()
     scene.add_frames(frame1)
     scene.add_frames(frame2)
