@@ -296,6 +296,8 @@ logs/
 *.sqlite
 *.sqlite3
 
+tasks/
+
 # Secrets / credentials (never commit these!)
 *.pem
 *.key

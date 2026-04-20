@@ -16,5 +16,5 @@ set(libs
         glm
 )
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME} hw/hw4.cpp)
 target_link_libraries(${PROJECT_NAME} ${libs})
