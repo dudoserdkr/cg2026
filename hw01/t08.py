@@ -1,6 +1,6 @@
 import numpy as np
 
-from hw01.utils import get_scale_around_pivot
+from src.engine.model.Point import SimplePoint
 from utils import (
     get_vertices,
     get_rectanglescene,
@@ -9,6 +9,7 @@ from utils import (
     get_translation,
     get_rotation_matrix,
     print_current_transformation,
+    get_scale_around_pivot
 )
 
 
@@ -34,6 +35,10 @@ def frame2(scene):
     rect.set_geometry(vertices_h[:, :2].flatten())
     rect["color"] = "red"
 
+    pivot = SimplePoint(0.5, 0.5, color="red")
+    # pivot["labels"] = (("$pivot\_2$", (0.5, 0.5)),)
+    scene["pivot_2"] = pivot
+
 
 def frame3(scene):
     vertices_h = get_homogeneous_vertices()  # vertices_h stands for homogeneous vertices
@@ -45,6 +50,10 @@ def frame3(scene):
     rect = scene["rect"]
     rect.set_geometry(vertices_h[:, :2].flatten())
     rect["color"] = "green"
+
+    pivot = SimplePoint(0, 1, color="green")
+    # pivot["labels"] = (("$pivot\_3$", (0.1, 0.2)),)
+    scene["pivot_3"] = pivot
 
 
 def frame4(scene):
@@ -58,6 +67,10 @@ def frame4(scene):
     rect.set_geometry(vertices_h[:, :2].flatten())
     rect["color"] = "orange"
 
+    pivot = SimplePoint(1, 1, color="orange")
+    # pivot["labels"] = (("$pivot\_4$", (1, 1)),)
+    scene["pivot_4"] = pivot
+
 
 def frame5(scene):
     vertices_h = get_homogeneous_vertices()  # vertices_h stands for homogeneous vertices
@@ -69,6 +82,9 @@ def frame5(scene):
     rect = scene["rect"]
     rect.set_geometry(vertices_h[:, :2].flatten())
     rect["color"] = "black"
+
+    pivot = SimplePoint(2, 2, color="black")
+    scene["pivot_5"] = pivot
 
 
 if __name__ == '__main__':

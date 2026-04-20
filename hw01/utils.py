@@ -13,7 +13,7 @@ def get_homogeneous_vertices():
 def get_rectanglescene():
     return RectangleScene(
         image_size=(10, 10),  # розмір зображення: 1 - 100 пікселів
-        coordinate_rect=(-6, -6, 6, 6),  # розмірність системи координат
+        coordinate_rect=(-12, -12, 12, 12),  # розмірність системи координат
         title="Picture",  # заголовок рисунка
         grid_show=False,  # чи показувати координатну сітку
         base_axis_show=False,  # чи показувати базові осі зображення
@@ -55,6 +55,62 @@ def get_rotation_around_pivot(theta, p_x, p_y):
 
 def get_scale_around_pivot(sx, sy, p_x, p_y):
     return get_translation(p_x, p_y) @ get_scale(sx, sy) @ get_translation(-p_x, -p_y)
+
+
+import numpy as np
+import math
+
+
+def decompose_trs(TRS):
+    if not np.allclose(TRS[2], [0, 0, 1]):
+        raise ValueError("Last row must be [0, 0, 1]")
+    tx, ty = TRS[0, 2], TRS[1, 2]
+    m = TRS[:2, :2]
+    sx = np.linalg.norm(m[:, 0])
+    sy = np.linalg.norm(m[:, 1])
+    if np.isclose(sx, 0) or np.isclose(sy, 0):
+        raise ValueError("Scale factors must be non-zero")
+    det = np.linalg.det(m)
+    if det < 0:
+        sy = -sy
+    angle_rad = np.arctan2(TRS[1, 0] / sx, TRS[0, 0] / sx)
+    angle_deg = np.degrees(angle_rad)
+    R = get_rotation_matrix(angle_deg)
+    T = get_translation(tx, ty)
+    S = get_scale(sx, sy)
+    reconstructed = T @ R @ S
+    if not np.allclose(reconstructed, TRS, atol=1e-6):
+        raise ValueError(
+            "Matrix cannot be decomposed into a valid TRS transformation"
+        )
+    return R, T, S
+
+
+def decompose_trs_around_pivot(TRS, p_x, p_y):
+    if not np.allclose(TRS[2], [0, 0, 1]):
+        raise ValueError("Last row must be [0, 0, 1]")
+    m = TRS[:2, :2]
+    sx = np.linalg.norm(m[:, 0])
+    sy = np.linalg.norm(m[:, 1])
+    if np.isclose(sx, 0) or np.isclose(sy, 0):
+        raise ValueError("Scale factors must be non-zero")
+    det = np.linalg.det(m)
+    if det < 0:
+        sy = -sy
+    angle_rad = np.arctan2(TRS[1, 0] / sx, TRS[0, 0] / sx)
+    angle_deg = np.degrees(angle_rad)
+    p = np.array([p_x, p_y])
+    t_col = TRS[:2, 2]
+    t = t_col - m @ (-p) - p
+    R = get_rotation_around_pivot(angle_deg, p_x, p_y)
+    T = get_translation(t[0], t[1])
+    S = get_scale_around_pivot(sx, sy, p_x, p_y)
+    reconstructed = T @ R @ S
+    if not np.allclose(reconstructed, TRS, atol=1e-6):
+        raise ValueError(
+            "Matrix cannot be decomposed into a valid TRS transformation"
+        )
+    return R, T, S
 
 
 def print_current_transformation(R=None, T=None, S=None, vertices=None,
