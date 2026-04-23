@@ -57,10 +57,6 @@ def get_scale_around_pivot(sx, sy, p_x, p_y):
     return get_translation(p_x, p_y) @ get_scale(sx, sy) @ get_translation(-p_x, -p_y)
 
 
-import numpy as np
-import math
-
-
 def decompose_trs(TRS):
     if not np.allclose(TRS[2], [0, 0, 1]):
         raise ValueError("Last row must be [0, 0, 1]")

@@ -6,20 +6,20 @@ from src.math.Vec4 import Vec4
 
 
 class Quaternion:
-    ERROR_MESSAGE_ROTATION = "Вектор повороту повинен містити рівно 3 дійсних елементи."
-    ERROR_MESSAGE_ADD = "Правий операнд має бути число, список або Quaternion."
-    ERROR_MESSAGE_MULT = "Множення можливе лише з іншими об'єктами Matrix4x4 або numpy.ndarray 4x4."
-    ERROR_MESSAGE_INV_DOESNT_EXIST = "Нульовий кватерніон"
+    ERROR_MESSAGE_ROTATION = "Rotation vector must contain exactly 3 real elements."
+    ERROR_MESSAGE_ADD = "Right operand must be a number, list or Quaternion."
+    ERROR_MESSAGE_MULT = "Multiplication is only possible with other Matrix4x4 objects or numpy.ndarray 4x4."
+    ERROR_MESSAGE_INV_DOESNT_EXIST = "Zero quaternion."
 
     def __init__(self, *a):
         """
-        Ініціалізація кватерніона з підтримкою копіювання.
-        Якщо передано один аргумент і це інший кватерніон, створюється його копія.
-        Якщо передано 4 аргументи - створюється відповідний кватерніон.
-        Якщо аргументи відсутні - створюється тривіальний кватерніон (1, 0, 0, 0).
-        Якщо аргументом є вектор v=(v.x, v.y, v.z) типу Vec3 то створюється кватерніон v.x * i + v.y * j + v.z * k
-        Якщо v=(v.x, v.y, v.z, v.w) типу Vec4, то створюється кватерніон v.w + v.x * i + v.y * j + v.z * k
-        Додано підтримку списків, кортежів та numpy-масивів.
+        Quaternion initialization with copy support.
+        If one argument is passed and it is another quaternion, a copy is created.
+        If 4 arguments are passed, the corresponding quaternion is created.
+        If no arguments are provided, the identity quaternion (1, 0, 0, 0) is created.
+        If the argument is a vector v=(v.x, v.y, v.z) of type Vec3, creates quaternion v.x*i + v.y*j + v.z*k.
+        If v=(v.x, v.y, v.z, v.w) of type Vec4, creates quaternion v.w + v.x*i + v.y*j + v.z*k.
+        Lists, tuples and numpy arrays are also supported.
         """
         if len(a) == 1:
             if isinstance(a[0], Quaternion):
@@ -33,11 +33,11 @@ class Quaternion:
             elif isinstance(a[0], (list, tuple, np.ndarray)) and len(a[0]) == 4:
                 self.q = np.array(a[0])
             else:
-                self.q = np.array([1, 0, 0, 0])  # Тривіальний кватерніон
+                self.q = np.array([1, 0, 0, 0])  # Identity quaternion
         elif len(a) == 4:
             self.q = np.array(a)
         else:
-            self.q = np.array([1, 0, 0, 0])  # Тривіальний кватерніон
+            self.q = np.array([1, 0, 0, 0])  # Identity quaternion
 
     @property
     def w(self):
@@ -90,7 +90,7 @@ class Quaternion:
         self.q[key] = value
 
     def __add__(self, other):
-        """Додавання двох кватерніонів."""
+        """Addition of two quaternions."""
         if isinstance(other, (float, int)):
             return Quaternion(self.w + other, self.x + other, self.y + other, self.z + other)
         elif isinstance(other, (Quaternion, np.ndarray, list, tuple)):
@@ -107,7 +107,7 @@ class Quaternion:
             raise TypeError(Quaternion.ERROR_MESSAGE_ADD)
 
     def __mul__(self, other):
-        """Множення двох кватерніонів."""
+        """Multiplication of two quaternions."""
         if isinstance(other, (float, int)):
             return Quaternion(self.q * other)
 
@@ -129,18 +129,18 @@ class Quaternion:
         return iter(self.q)
 
     def __neg__(self):
-        """Оголошує унарний мінус (-obj)"""
-        return Quaternion(-self.q)  # Повертаємо новий об'єкт з оберненим значенням
+        """Declares unary minus (-obj)"""
+        return Quaternion(-self.q)  # Return new object with negated value
 
     def __str__(self):
-        """Повертає строкове представлення кватерніона."""
+        """Returns the string representation of the quaternion."""
         return f"( {self.w:0.5f} + {self.x:0.5f}i + {self.y:0.5f}j + {self.z:0.5f}k )"
 
     def __repr__(self):
         return str(self)
 
     def conjugate(self):
-        """Повертає спряжений кватерніон."""
+        """Returns the conjugate quaternion."""
         return Quaternion(self.w, -self.x, -self.y, -self.z)
 
     def norm2(self):
@@ -167,7 +167,7 @@ class Quaternion:
         return Vec4(self.x, self.y, self.z, self.w)
 
     def inverse(self):
-        """Повертає обернений кватерніон."""
+        """Returns the inverse quaternion."""
         norm_squared = np.dot(self.q, self.q)
         if norm_squared == 0:
             raise ZeroDivisionError(Quaternion.ERROR_MESSAGE_INV_DOESNT_EXIST)
@@ -197,7 +197,7 @@ class Quaternion:
 
     @staticmethod
     def rotation(theta, axis):
-        """Створює кватерніон для обертання на кут theta навколо заданої осі."""
+        """Creates a quaternion for rotation by angle theta around the given axis."""
         cos_theta = np.cos(theta / 2)
         sin_theta = np.sin(theta / 2)
         if isinstance(axis, (Vec3, Vec4)):
@@ -211,7 +211,7 @@ class Quaternion:
 
     @staticmethod
     def rotation_x(theta):
-        """Створює кватерніон для обертання на кут theta навколо осі OX."""
+        """Creates a quaternion for rotation by angle theta around the OX axis."""
         cos_theta = np.cos(theta / 2)
         sin_theta = np.sin(theta / 2)
         axis = np.array((1, 0, 0))
@@ -219,7 +219,7 @@ class Quaternion:
 
     @staticmethod
     def rotation_y(theta):
-        """Створює кватерніон для обертання на кут theta навколо осі OY."""
+        """Creates a quaternion for rotation by angle theta around the OY axis."""
         cos_theta = np.cos(theta / 2)
         sin_theta = np.sin(theta / 2)
         axis = np.array((0, 1, 0))
@@ -227,14 +227,14 @@ class Quaternion:
 
     @staticmethod
     def rotation_z(theta):
-        """Створює кватерніон для обертання на кут theta навколо осі OZ."""
+        """Creates a quaternion for rotation by angle theta around the OZ axis."""
         cos_theta = np.cos(theta / 2)
         sin_theta = np.sin(theta / 2)
         axis = np.array((0, 0, 1))
         return Quaternion(cos_theta, *(axis * sin_theta))
 
     def rotate_vector(self, u):
-        """Поворот 3D-вектора u навколо осі v на кут theta за допомогою кватерніона."""
+        """Rotates 3D vector u around axis v by angle theta using a quaternion."""
         if isinstance(u, Vec4):
             vector_quaternion = Quaternion(0, *u.xyz)
         elif isinstance(u, Vec3):
@@ -248,13 +248,13 @@ class Quaternion:
         return Vec4(rotated.x, rotated.y, rotated.z)
 
     def to_angle_axis(self):
-        """Обчислює кут та вісь повороту з кватерніона"""
+        """Computes rotation angle and axis from the quaternion"""
         w, x, y, z = self.wxyz
         angle = 2 * np.arccos(w)
 
         sin_half_angle = np.sqrt(1 - w * w)
         if sin_half_angle < 1e-6:
-            axis = Vec3(1.0, 0.0, 0.0)  # вісь довільна, якщо кут ≈ 0
+            axis = Vec3(1.0, 0.0, 0.0)  # axis is arbitrary when angle ≈ 0
         else:
             axis = Vec3(x, y, z) / sin_half_angle
 
@@ -262,23 +262,23 @@ class Quaternion:
 
 
 if __name__ == "__main__":
-    # Приклад використання
+    # Usage example
     q1 = Quaternion(1, 2, 3, 4)
     q2 = Quaternion(5, 6, 7, 8)
-    q3 = Quaternion(q1)  # Копіювання
-    q4 = Quaternion()  # Тривіальний кватерніон
-    q5 = Quaternion([9, 10, 11, 12])  # Ініціалізація зі списку
-    q6 = Quaternion(np.array([13, 14, 15, 16]))  # Ініціалізація з numpy
+    q3 = Quaternion(q1)  # Copy
+    q4 = Quaternion()  # Identity quaternion
+    q5 = Quaternion([9, 10, 11, 12])  # Initialization from list
+    q6 = Quaternion(np.array([13, 14, 15, 16]))  # Initialization from numpy
 
     print("q1:", q1)
     print("q2:", q2)
-    print("q3 (копія q1):", q3)
-    print("q4 (тривіальний кватерніон):", q4)
-    print("q5 (ініціалізований зі списку):", q5)
-    print("q6 (ініціалізований з numpy-масиву):", q6)
+    print("q3 (copy of q1):", q3)
+    print("q4 (identity quaternion):", q4)
+    print("q5 (initialized from list):", q5)
+    print("q6 (initialized from numpy array):", q6)
     print("q1 + q2:", q1 + q2)
     print("q1 * q2:", q1 * q2)
-    print("Спряжений q1:", q1.conjugate())
+    print("Conjugate of q1:", q1.conjugate())
 
     q7 = Quaternion(q6)
     print("||q7||^2 =  ", q7.norm2())

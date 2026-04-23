@@ -5,18 +5,18 @@ from src.math.Vec3 import Vec3
 
 class Vec4:
 
-    ERROR_MESSAGE_CONSTRUCTOR = "Непідтриманий тип даних для ініціалізації або недостатньо елементів для побудови Vec4."
-    ERROR_MESSAGE_ADD = "Правий операнд має бути число, список або Vec4."
-    ERROR_MESSAGE_MULT = "Правий операнд має бути число, список або Vec4."
-    ERROR_MESSAGE_DIV = "Правий операнд має бути числом"
+    ERROR_MESSAGE_CONSTRUCTOR = "Unsupported data type or insufficient elements to build a Vec4."
+    ERROR_MESSAGE_ADD = "Right operand must be a number, list or Vec4."
+    ERROR_MESSAGE_MULT = "Right operand must be a number, list or Vec4."
+    ERROR_MESSAGE_DIV = "Right operand must be a number."
 
     def __init__(self, *data):
         """
-        Конструктор класу Vector3.
-        Якщо дані не передані, створює нульовий вектор.
-        Приймає:
-        - список або масив із трьох елементів,
-        - інший об'єкт Vector3.
+        Vector3 class constructor.
+        If no data is provided, creates a zero vector.
+        Accepts:
+        - a list or array of three elements,
+        - another Vector3 object.
         """
         if len(data) == 0:
             self.data = np.zeros(4, dtype=float)
@@ -45,13 +45,13 @@ class Vec4:
 
     def __getitem__(self, index):
         """
-        Отримання елемента вектора по індексу.
+        Get vector element by index.
         """
         return self.data[index]
 
     def __setitem__(self, index, value):
         """
-        Встановлення значення елемента вектора по індексу.
+        Set vector element value by index.
         """
         self.data[index] = value
 
@@ -60,7 +60,7 @@ class Vec4:
 
     def __str__(self):
         """
-        Повертає строкове представлення вектора.
+        Returns the string representation of the vector.
         """
         return np.array2string(self.data, formatter={'float_kind': lambda x: f"{x:8.3f}"})
 
@@ -92,8 +92,8 @@ class Vec4:
             raise TypeError(Vec4.ERROR_MESSAGE_MULT)
 
     def __iter__(self):
-        """Оператор *obj працює через цей метод"""
-        return iter(self.data)  # Повертаємо ітератор списку
+        """The *obj operator works through this method"""
+        return iter(self.data)  # Returns an iterator over the data
 
     def __neg__(self):
         return Vec4(-self.data)

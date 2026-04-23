@@ -17,9 +17,9 @@ def translation_matrix(t_x, t_y, t_z):
 
 
 if __name__ == '__main__':
-    # Зсуви
-    T = translation_matrix(t_x=3,  # Зсув уздовж осі X
-                           t_y=4,  # Зсув уздовж осі Y
-                           t_z=5  # Зсув уздовж осі Z
+    # Translations
+    T = translation_matrix(t_x=3,  # Translation along the X axis
+                           t_y=4,  # Translation along the Y axis
+                           t_z=5  # Translation along the Z axis
                            )
     print(T)

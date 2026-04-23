@@ -7,23 +7,23 @@ from src.math.Vec3 import Vec3
 
 
 class Mat3x3:
-    ERROR_MESSAGE_CONSTRUCTOR = "Непідтриманий тип даних для ініціалізації або недостатньо елементів для побудови матриці 3x3."
-    ERROR_MESSAGE_ADD = "Додавання можливе лише з іншими об'єктами Matrix3x3 або numpy.ndarray 3x3."
-    ERROR_MESSAGE_MULT = "Множення можливе лише з іншими об'єктами Matrix3x3 або numpy.ndarray 3x3 або з Vec3."
-    ERROR_MESSAGE_INV_DOESNT_EXIST = "Матриця не має оберненої."
-    ERROR_MESSAGE_SCALE = "Недостатньо даних, щоб сформувати матрицю розтягу"
+    ERROR_MESSAGE_CONSTRUCTOR = "Unsupported data type or insufficient elements to build a 3x3 matrix."
+    ERROR_MESSAGE_ADD = "Addition is only possible with other Matrix3x3 objects or numpy.ndarray 3x3."
+    ERROR_MESSAGE_MULT = "Multiplication is only possible with other Matrix3x3 objects or numpy.ndarray 3x3 or Vec3."
+    ERROR_MESSAGE_INV_DOESNT_EXIST = "Matrix has no inverse."
+    ERROR_MESSAGE_SCALE = "Insufficient data to construct the scale matrix."
 
     def __init__(self, *data):
         """
-        Конструктор класу Matrix3x3.
-        Якщо дані не передані, створює одиничну матрицю.
-        Приймає:
-        - 3x3 матрицю (numpy.ndarray),
-        - список списків 2x2 або 3x3,
-        - інший об'єкт Matrix3x3.
+        Matrix3x3 class constructor.
+        If no data is provided, creates an identity matrix.
+        Accepts:
+        - a 3x3 matrix (numpy.ndarray),
+        - a list of lists 2x2 or 3x3,
+        - another Matrix3x3 object.
         """
         if len(data) == 0:
-            # Якщо дані не передані, створюємо одиничну матрицю
+            # If no data is provided, creates an identity matrix
             self.data = np.eye(3, dtype=float)
         elif len(data) == 9:
             elements = np.array(data, dtype=float)
@@ -37,16 +37,16 @@ class Mat3x3:
         elif len(data) == 1:
             data = data[0]
             if isinstance(data, Mat3x3):
-                # Якщо переданий об'єкт Matrix3x3
+                # If a Matrix3x3 object is passed
                 self.data = np.copy(data.data)
             elif isinstance(data, (list, tuple, np.ndarray)):
                 try:
                     data = np.array(data)
                     if data.shape == (3, 3):
-                        # Якщо передана 3x3 матриця
+                        # If a 3x3 matrix is passed
                         self.data = np.array(data, dtype=float)
                     elif data.shape == (2, 2):
-                        # Якщо передана 2x2 матриця, доповнюємо до 3x3
+                        # If a 2x2 matrix is passed, padded to 3x3
                         self.data = np.eye(3, dtype=float)
                         self.data[:2, :2] = data
                     else:
@@ -63,27 +63,27 @@ class Mat3x3:
 
     def __getitem__(self, indices):
         """
-        Отримання елемента матриці по індексах (рядок, стовпчик).
+        Get matrix element by indices (row, col).
         """
         row, col = indices
         return self.data[row, col]
 
     def __setitem__(self, indices, value):
         """
-        Встановлення значення елемента матриці по індексах (рядок, стовпчик).
+        Set matrix element value by indices (row, col).
         """
         row, col = indices
         self.data[row, col] = value
 
     def __str__(self):
         """
-        Повертає строкове представлення матриці.
+        Returns the string representation of the matrix.
         """
         return np.array2string(self.data, formatter={'float_kind': lambda x: f"{x:8.3f}"})
 
     def __add__(self, other):
         """
-        Реалізує додавання двох матриць Matrix3x3 або numpy.ndarray 3x3.
+        Implements addition of two Matrix3x3 or numpy.ndarray 3x3 objects.
         """
         if not isinstance(other, (Mat3x3, np.ndarray)):
             raise TypeError(Mat3x3.ERROR_MESSAGE_ADD)
@@ -93,7 +93,7 @@ class Mat3x3:
 
     def __matmul__(self, other):
         """
-        Реалізує множення матриці на іншу Matrix3x3, numpy.ndarray 3x3, або Vector3.
+        Implements matrix multiplication with another Matrix3x3, numpy.ndarray 3x3, or Vector3.
         """
         if not isinstance(other, (Mat3x3, np.ndarray, Vec3)):
             raise TypeError(Mat3x3.ERROR_MESSAGE_MULT)
@@ -108,21 +108,19 @@ class Mat3x3:
 
         if isinstance(other, Mat3x3):
             return Mat3x3(np.dot(self.data, other.data))
-        if isinstance(other, Mat3x3):
-            return Mat3x3(np.dot(self.data, other.data))
         elif isinstance(other, Vec3):
             return Vec3(np.dot(self.data, other.data))
         return Mat3x3(np.dot(self.data, other))
 
     def __mul__(self, other):
         """
-        Реалізує множення матриці на іншу Matrix3x3, numpy.ndarray 3x3, або Vector3.
+        Implements matrix multiplication with another Matrix3x3, numpy.ndarray 3x3, or Vector3.
         """
         return self.__matmul__(other)
 
     def inverse(self):
         """
-        Обчислює обернену матрицю.
+        Computes the inverse matrix.
         """
         det = np.linalg.det(self.data)
         if np.isclose(det, 0):
@@ -168,9 +166,9 @@ class Mat3x3:
         angle = np.arccos((R[0, 0] + R[1, 1] + R[2, 2] - 1) / 2)
 
         if np.isclose(angle, 0):
-            axis = np.array([1, 0, 0])  # Вісь довільна, бо кут ≈ 0
+            axis = np.array([1, 0, 0])  # Axis is arbitrary since angle ≈ 0
         elif np.isclose(angle, np.pi):
-            # Обережно для кута ~180°
+            # Handle angle ≈ 180° carefully
             x = np.sqrt((R[0, 0] + 1) / 2)
             y = np.sqrt((R[1, 1] + 1) / 2)
             z = np.sqrt((R[2, 2] + 1) / 2)
@@ -192,7 +190,7 @@ class Mat3x3:
     def translation(tx, ty=None):
         if ty is None and isinstance(tx, Vec3):
             m = translation_matrix2d(*tx.xy)
-        elif ty is None and isinstance(tx, (np.ndarray, list, tuple)):
+        elif ty is None and isinstance(tx, np.ndarray):
             m = translation_matrix2d(tx[0], tx[1])
         else:
             m = translation_matrix2d(tx, ty)
@@ -217,57 +215,57 @@ class Mat3x3:
         return Mat3x3(m)
 
 
-# Приклад використання
+# Usage example
 if __name__ == "__main__":
-    # Ініціалізація різними способами
+    # Initialization with various input types
     m1 = Mat3x3([[1, 2], [3, 4]])  # 2x2
-    print("Матриця 2x2, доповнена до 3x3:")
+    print("2x2 matrix padded to 3x3:")
     print(m1)
 
     m2 = Mat3x3([[1, 2, 3], [4, 5, 6], [7, 8, 9]])  # 3x3
-    print("Матриця 3x3:")
+    print("3x3 matrix:")
     print(m2)
 
     m22 = Mat3x3(([1, 2, 3], [4, 5, 6], [7, 8, 9]))  # 3x3 ########
-    print("Матриця 3x3:")
+    print("3x3 matrix:")
     print(m22)
 
-    m3 = Mat3x3(m2)  # Копіювання об'єкта
-    print("Копія матриці 3x3:")
+    m3 = Mat3x3(m2)  # Copy об'єкта
+    print("Copy of 3x3 matrix:")
     print(m3)
 
-    # Доступ до елементів і їх зміна
-    print("Елемент [1, 2]:", m2[1, 2])
+    # Access and modification of elements
+    print("Element [1, 2]:", m2[1, 2])
     m2[1, 2] = 42
-    print("Матриця після зміни елемента [1, 2]:")
+    print("Matrix after changing element [1, 2]:")
     print(m2)
 
-    # Множення матриць
+    # Matrix multiplication
     m4 = m1 @ m2  # @ == *
-    print("Результат множення матриць:")
+    print("Matrix multiplication result:")
     print(m4)
 
-    # Додавання матриць
+    # Matrix addition
     m5 = m1 + m1
-    print("Результат додавання матриць:")
+    print("Matrix addition result:")
     print(m5)
 
-    # Поелементне множення матриць
+    # Element-wise matrix multiplication
     m6 = m2 * m2
-    print("Результат множення матриць:")
+    print("Matrix multiplication result:")
     print(m6)
 
-    # Обчислення оберненої матриці
+    # Compute inverse matrix
     try:
         m1_inv = m1.inverse()
-        print("Обернена матриця до m1:")
+        print("Inverse of m1:")
         print(m1_inv)
 
         m8 = m1_inv * m1
         print("m7 * m1:")
         print(m8)
     except ValueError as e:
-        print(f"Помилка: {e}")
+        print(f"Error: {e}")
 
     # v = Vector3(1, 2, 3)
 
@@ -282,7 +280,7 @@ if __name__ == "__main__":
                  77, 88)
     print(m11)
 
-    print("======== розвʼязання системи алгебраїчних рівнянь ===============")
+    print("======== solving system of algebraic equations ===============")
     # print("A:")
     # print(m44)
 

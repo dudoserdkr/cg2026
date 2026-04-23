@@ -311,3 +311,6 @@ credentials.json
 *.temp
 *.bak
 *.swp
+
+src/
+src2D/

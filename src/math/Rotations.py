@@ -3,13 +3,13 @@ import numpy as np
 
 def rotation_matrix_x(phi):
     """
-    Формує матрицю обертання навколо осі X на заданий кут.
+    Builds the rotation matrix around the X axis by the given angle.
 
     Parameters:
-    theta (float): Кут обертання у радіанах.
+    theta (float): Rotation angle in radians.
 
     Returns:
-    numpy.ndarray: Матриця обертання 3x3.
+    numpy.ndarray: 3x3 rotation matrix.
     """
     cos_phi, sin_phi =  np.cos(phi), np.sin(phi)
     return np.array([
@@ -21,13 +21,13 @@ def rotation_matrix_x(phi):
 
 def rotation_matrix_y(phi):
     """
-    Формує матрицю обертання навколо осі Y на заданий кут.
+    Builds the rotation matrix around the Y axis by the given angle.
 
     Parameters:
-    theta (float): Кут обертання у радіанах.
+    theta (float): Rotation angle in radians.
 
     Returns:
-    numpy.ndarray: Матриця обертання 3x3.
+    numpy.ndarray: 3x3 rotation matrix.
     """
     cos_phi, sin_phi =  np.cos(phi), np.sin(phi)
     return np.array([
@@ -38,13 +38,13 @@ def rotation_matrix_y(phi):
 
 def rotation_matrix_z(phi):
     """
-    Формує матрицю обертання навколо осі Z на заданий кут.
+    Builds the rotation matrix around the Z axis by the given angle.
 
     Parameters:
-    theta (float): Кут обертання у радіанах.
+    theta (float): Rotation angle in radians.
 
     Returns:
-    numpy.ndarray: Матриця обертання 3x3.
+    numpy.ndarray: 3x3 rotation matrix.
     """
     cos_phi, sin_phi =  np.cos(phi), np.sin(phi)
 
@@ -55,41 +55,18 @@ def rotation_matrix_z(phi):
     ])
 
 
-def get_rotation_angle(matrix):
-    # Перевірка ортогональності R
-    if not np.allclose(np.dot(matrix.T, matrix), np.eye(2)) or not np.isclose(np.linalg.det(matrix), 1):
-        raise ValueError("Матриця не є коректною матрицею повороту.")
-
-    """
-    Обчислює кут повороту (в радіанах) із 2D матриці повороту.
-    """
-    if matrix.shape != (2, 2) and matrix.shape != (3, 3):
-        raise ValueError("Некоректна матриця повороту!")
-
-    if matrix.shape == (3, 3):
-        matrix = matrix[:2, :2]
-
-    # Витягуємо значення sin і cos
-    cos_theta = matrix[0, 0]
-    sin_theta = matrix[1, 0]
-
-    # Обчислення кута через arctan2
-    angle = np.arctan2(sin_theta, cos_theta)
-    return angle
-
-
-# Приклад використання:
+# Usage example:
 if __name__ == "__main__":
     euler_angles_45_45_30 = [45, 15, 30]
-    x = np.radians(euler_angles_45_45_30[0])  # Кут у градусах конвертується в радіани
-    y = np.radians(euler_angles_45_45_30[1])  # Кут у градусах конвертується в радіани
-    z = np.radians(euler_angles_45_45_30[2])  # Кут у градусах конвертується в радіани
+    x = np.radians(euler_angles_45_45_30[0])  # Angle in degrees is converted to radians
+    y = np.radians(euler_angles_45_45_30[1])  # Angle in degrees is converted to radians
+    z = np.radians(euler_angles_45_45_30[2])  # Angle in degrees is converted to radians
 
     Rx = rotation_matrix_x(x)
     Ry = rotation_matrix_y(y)
     Rz = rotation_matrix_z(z)
 
-    print("\nМатриця обертання послідовно по кутах ейлера:")
+    print("\nRotation matrix for sequential Euler angles:")
     print()
     print(Rx @ Ry @ Rz)
 

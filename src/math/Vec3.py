@@ -2,19 +2,19 @@ import numpy as np
 
 
 class Vec3:
-    ERROR_MESSAGE_CONSTRUCTOR = "Непідтриманий тип даних для ініціалізації або недостатньо елементів для побудови Vec3."
-    ERROR_MESSAGE_ADD = "Правий операнд має бути число, список або Vec3."
-    ERROR_MESSAGE_MULT = "Правий операнд має бути число, список або Vec3."
-    ERROR_MESSAGE_CROSS = "Потрібен Vec3 або список із 3 елементів."
-    ERROR_MESSAGE_DIV = "Правий операнд має бути число"
+    ERROR_MESSAGE_CONSTRUCTOR = "Unsupported data type or insufficient elements to build a Vec3."
+    ERROR_MESSAGE_ADD = "Right operand must be a number, list or Vec3."
+    ERROR_MESSAGE_MULT = "Right operand must be a number, list or Vec3."
+    ERROR_MESSAGE_CROSS = "Expected Vec3 or a list of 3 elements."
+    ERROR_MESSAGE_DIV = "Right operand must be a number."
 
     def __init__(self, *data):
         """
-        Конструктор класу Vector3.
-        Якщо дані не передані, створює нульовий вектор.
-        Приймає:
-        - список або масив із трьох елементів,
-        - інший об'єкт Vector3.
+        Vector3 class constructor.
+        If no data is provided, creates a zero vector.
+        Accepts:
+        - a list or array of three elements,
+        - another Vector3 object.
         """
         if len(data) == 0:
             self.data = np.zeros(3, dtype=float)
@@ -40,13 +40,13 @@ class Vec3:
 
     def __getitem__(self, index):
         """
-        Отримання елемента вектора по індексу.
+        Get vector element by index.
         """
         return self.data[index]
 
     def __setitem__(self, index, value):
         """
-        Встановлення значення елемента вектора по індексу.
+        Set vector element value by index.
         """
         self.data[index] = value
 
@@ -55,7 +55,7 @@ class Vec3:
 
     def __str__(self):
         """
-        Повертає строкове представлення вектора.
+        Returns the string representation of the vector.
         """
         return np.array2string(self.data, formatter={'float_kind': lambda x: f"{x:8.3f}"})
 
@@ -93,8 +93,8 @@ class Vec3:
             raise TypeError(Vec3.ERROR_MESSAGE_DIV)
 
     def __iter__(self):
-        """Оператор *obj працює через цей метод"""
-        return iter(self.data)  # Повертаємо ітератор списку
+        """The *obj operator works through this method"""
+        return iter(self.data)  # Returns an iterator over the data
 
     def __neg__(self):
         return Vec3(-self.data)
@@ -119,7 +119,7 @@ class Vec3:
 
     def cross(self, other):
         """
-        Обчислює векторний добуток з іншим вектором Vector3 або numpy.ndarray з 3 елементів.
+        Computes cross product with another Vector3 or numpy.ndarray of 3 elements.
         """
         if isinstance(other, (Vec3, np.ndarray, tuple, list)) and len(other) == 3:
             other = Vec3(other)

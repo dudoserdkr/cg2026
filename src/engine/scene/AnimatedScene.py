@@ -7,10 +7,12 @@ from src.engine.scene.Scene import Scene
 
 matplotlib.use("TkAgg")
 
+
 class AnimatedScene(Scene, AnimationFinishedListener):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
         self._current_animation = None
         self._animations = []
 
@@ -29,9 +31,9 @@ class AnimatedScene(Scene, AnimationFinishedListener):
         if len(self._animations) > 0:
             current = self._animations[0]
             self._animations.pop(0)
-            self.animate(current)
+            self.__animate(current)
 
-    def animate(self, animation: Animation = None):
+    def __animate(self, animation: Animation = None):
 
         if animation is None:
             self.__animate_next()
@@ -48,9 +50,8 @@ class AnimatedScene(Scene, AnimationFinishedListener):
                             repeat=animation.repeat,
                             blit=False,
                             )
-        if self.out_file is not None:
-            ani.save(self.out_file, writer="pillow", fps=20)
 
+        #       ani.save("animation.gif", writer="pillow", fps=20)
         Scene._show_plot()
 
     def __on_frame(self, frame):
@@ -67,9 +68,8 @@ class AnimatedScene(Scene, AnimationFinishedListener):
         self.add_frames(new_frame)
 
     def __update(self, frame):
-        self.figure.clear()  # Очищення фігури
+        self.plt_axis.clear()  # Clear the figure
         self._prepare()
-
         self.__on_frame(frame)
         self._draw_frames()
 
