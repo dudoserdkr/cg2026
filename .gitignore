@@ -312,5 +312,4 @@ credentials.json
 *.bak
 *.swp
 
-src/
-src2D/
+.pdf

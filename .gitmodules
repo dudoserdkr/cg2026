@@ -1,0 +1,8 @@
+[submodule "src_3d"]
+	path = src_3d
+	url = https://github.com/krenevych/GraphicEngine2D.git
+	branch = engine_3d
+[submodule "src_2d"]
+	path = src_2d
+	url = https://github.com/krenevych/GraphicEngine2D.git
+	branch = main
